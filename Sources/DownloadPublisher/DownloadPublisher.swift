@@ -8,14 +8,14 @@
 import Foundation
 import Combine
 
-enum OverwritePolicy { case keep, overwrite, rename }
+public enum OverwritePolicy { case keep, overwrite, rename }
 
 public class Downloader {
   
-  let session: URLSession
-  let delegate: DownloadDelegate
+  public let session: URLSession
+  private let delegate: DownloadDelegate
   
-  var cancellables: Set<AnyCancellable> = []
+  private var cancellables: Set<AnyCancellable> = []
   
   class DownloadDelegate: NSObject, URLSessionDownloadDelegate {
     var tasks: [Int: (URL, OverwritePolicy)] = [:]
@@ -60,7 +60,7 @@ public class Downloader {
     }
   }
   
-  init() {
+  public init() {
     self.delegate = DownloadDelegate()
     let configuration = URLSessionConfiguration.ephemeral
     let queue = OperationQueue()
@@ -70,7 +70,7 @@ public class Downloader {
   
   // if you want progress and specifying location
   
-  func download(from: URL, to: URL) -> AnyPublisher<(URLRequest, URLResponse?, Progress), Error> {
+  public func download(from: URL, to: URL) -> AnyPublisher<(URLRequest, URLResponse?, Progress), Error> {
     let task = session.downloadTask(with: from)
     let publisher = Publishers.CombineLatest4(
       task.publisher(for: \.currentRequest, options: .initial),
@@ -95,7 +95,7 @@ public class Downloader {
   // if you dont' care about progress or specifying location
   // just the task state and the completed data
   
-  func download(with request: URLRequest) -> Future<Data, Error> {
+  public func download(with request: URLRequest) -> Future<Data, Error> {
     let task = session.downloadTask(with: request)
     let url = generateTempCacheURL()
     delegate.tasks[task.taskIdentifier] = (url, .overwrite)
