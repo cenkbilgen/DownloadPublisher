@@ -10,7 +10,7 @@ import Combine
 
 enum OverwritePolicy { case keep, overwrite, rename }
 
-class Downloader {
+public class Downloader {
   
   let session: URLSession
   let delegate: DownloadDelegate
